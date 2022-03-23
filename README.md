@@ -2,4 +2,4 @@
 
 Navigate in time same way as Google Photos.
 
-[<img src="example/screenshot.png" width="200" alt=""/>](https://rainbow-console-log.herokuapp.com/)
+[<img src="example/screenshot.png" width="300" alt=""/>](https://timeline-vertical-navigation.herokuapp.com/)
