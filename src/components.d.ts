@@ -9,6 +9,7 @@ export namespace Components {
     interface TimelineVerticalNavigation {
         "darkmode": boolean;
         "dates": string;
+        "lineartime": boolean;
     }
 }
 declare global {
@@ -26,6 +27,8 @@ declare namespace LocalJSX {
     interface TimelineVerticalNavigation {
         "darkmode"?: boolean;
         "dates": string;
+        "lineartime"?: boolean;
+        "onDateSelected"?: (event: CustomEvent<Date>) => void;
     }
     interface IntrinsicElements {
         "timeline-vertical-navigation": TimelineVerticalNavigation;

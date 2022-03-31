@@ -8,6 +8,7 @@
   bottom: 0;
   right: 0;
   width: 36px;
+  cursor: row-resize;
 }
 .background {
   position: absolute;

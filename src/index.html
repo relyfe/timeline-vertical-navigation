@@ -9,6 +9,18 @@
     <script nomodule src="/build/timeline-vertical-navigation.js"></script>
   </head>
   <body style="background-color: aliceblue">
-    <timeline-vertical-navigation dates="2022-09-12, 2000-01-01, 2010-12-01, 2000-01-01, 2000-01-01, 2000-01-01"></timeline-vertical-navigation>
+    <script>
+      const test = date => {
+        console.log('date', date);
+      };
+    </script>
+    <timeline-vertical-navigation dates="2022-09-12, 2000-01-01, 2010-12-01, 2000-01-01, 2000-01-01, 2025-01-01"></timeline-vertical-navigation>
+    <script>
+      const timelineVerticalNavigation = document.querySelector('timeline-vertical-navigation');
+      timelineVerticalNavigation.addEventListener('dateSelected', e => {
+        const selectedDate = e.detail;
+        console.log('selected date', selectedDate);
+      });
+    </script>
   </body>
 </html>
