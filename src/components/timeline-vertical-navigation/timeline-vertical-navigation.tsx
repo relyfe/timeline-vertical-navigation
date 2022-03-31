@@ -10,8 +10,11 @@ export class TimelineVerticalNavigation {
   currentDateUnderlineElement!: HTMLElement;
   currentDateElement!: HTMLElement;
   datesArray: Date[];
+  minDate: Date;
+  maxDate: Date;
 
   @State() show: boolean = false;
+  @State() movingRatio: number = 0;
 
   @Prop() dates!: string;
   @Prop() darkmode: boolean = false;
@@ -27,14 +30,32 @@ export class TimelineVerticalNavigation {
         .replace(']', '')
         .replace(', ', ',')
         .split(',')
-        .map(date => new Date(date));
+        .map(date => {
+          const formatedDate = new Date(date);
+          if (!this.minDate || formatedDate.getTime() < this.minDate.getTime()) this.minDate = formatedDate;
+          if (!this.maxDate || formatedDate.getTime() > this.maxDate.getTime()) this.maxDate = formatedDate;
+          return formatedDate;
+        });
     }
   }
 
-  onTvnInnerMouseMove = e => {
+  onInnerMouseMove = e => {
     const currentDateHeight = this.currentDateElement.clientHeight;
-    const translateY = Math.min(Math.max(e.offsetY - currentDateHeight, 0), this.navElement.clientHeight - currentDateHeight * 2);
+    const min = 0;
+    const max = this.navElement.clientHeight - currentDateHeight * 2;
+    const translateY = Math.min(Math.max(e.offsetY - currentDateHeight, min), max);
     this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = `translateY(${translateY}px)`;
+    this.movingRatio = (translateY - min) / (max - min);
+  };
+
+  getDateClothestToRatio = () => {
+    const dateRatio = this.minDate.getTime() + this.movingRatio * (this.maxDate.getTime() - this.minDate.getTime());
+    const closestDate = this.datesArray.reduce((prev, curr) => {
+      const prevDiff = Math.abs(prev.getTime() - dateRatio);
+      const currDiff = Math.abs(curr.getTime() - dateRatio);
+      return prevDiff < currDiff ? prev : curr;
+    });
+    return closestDate;
   };
 
   render() {
@@ -55,13 +76,18 @@ export class TimelineVerticalNavigation {
         }}
         ref={el => (this.navElement = el)}
       >
-        <div class={`inner ${this.show ? 'show' : ''}`} onMouseMove={e => this.onTvnInnerMouseMove(e)}>
+        <div class={`inner ${this.show ? 'show' : ''}`} onMouseMove={e => this.onInnerMouseMove(e)}>
           <div class="background">
             <div class="list"></div>
             <div class="current-date-underline" ref={el => (this.currentDateUnderlineElement = el)}></div>
             <div class="current-time-line"></div>
             <div class="current-date" ref={el => (this.currentDateElement = el)}>
-              <div class="current-date-label">{Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'short' }).format(this.datesArray[0])}</div>
+              <div class="current-date-label">
+                {Intl.DateTimeFormat(undefined, {
+                  year: 'numeric',
+                  month: 'short',
+                }).format(this.getDateClothestToRatio())}
+              </div>
             </div>
           </div>
         </div>
