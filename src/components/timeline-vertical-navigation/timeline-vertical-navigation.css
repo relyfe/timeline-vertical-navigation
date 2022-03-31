@@ -28,10 +28,10 @@
   right: 0;
   width: 56px;
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
 }
 .inner.show {
   opacity: 1;
+  transition: opacity 0.4s;
 }
 .list {
   position: absolute;

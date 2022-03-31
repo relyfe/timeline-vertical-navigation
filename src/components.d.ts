@@ -10,6 +10,7 @@ export namespace Components {
         "darkmode": boolean;
         "dates": string;
         "lineartime": boolean;
+        "pinned": boolean;
     }
 }
 declare global {
@@ -29,6 +30,7 @@ declare namespace LocalJSX {
         "dates": string;
         "lineartime"?: boolean;
         "onDateSelected"?: (event: CustomEvent<Date>) => void;
+        "pinned"?: boolean;
     }
     interface IntrinsicElements {
         "timeline-vertical-navigation": TimelineVerticalNavigation;

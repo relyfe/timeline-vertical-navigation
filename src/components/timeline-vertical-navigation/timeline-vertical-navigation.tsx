@@ -19,6 +19,7 @@ export class TimelineVerticalNavigation {
   @State() selectedRatio: number = 0;
 
   @Prop() dates!: string;
+  @Prop() pinned: boolean = false;
   @Prop() darkmode: boolean = false;
   @Prop() lineartime: boolean = false;
 
@@ -26,7 +27,22 @@ export class TimelineVerticalNavigation {
 
   componentWillLoad() {
     this.parseDates();
+    window.addEventListener('resize', () => {
+      this.onWindowResize();
+    });
   }
+
+  onWindowResize() {
+    const ratio = this.show ? this.movingRatio : this.selectedRatio;
+    const currentDateHeight = this.currentDateElement.clientHeight;
+    const min = 0;
+    const max = this.navElement.clientHeight - currentDateHeight * 2;
+    this.currentTimeLineElement.style.transform = `translateY(${min + (max - min) * ratio}px)`;
+    if (!this.show) {
+      this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = this.currentTimeLineElement.style.transform;
+    }
+  }
+
   @Watch('dates')
   parseDates() {
     if (this.dates) {
@@ -57,6 +73,10 @@ export class TimelineVerticalNavigation {
     const { translateY, ratio } = this.calculateOffsetAndRatio(e.offsetY);
     this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = `translateY(${translateY}px)`;
     this.movingRatio = ratio;
+  };
+
+  onNavMouseLeave = () => {
+    this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = this.currentTimeLineElement.style.transform;
   };
 
   onInnerClick = e => {
@@ -98,10 +118,11 @@ export class TimelineVerticalNavigation {
         }}
         onMouseLeave={() => {
           this.show = false;
+          this.onNavMouseLeave();
         }}
         ref={el => (this.navElement = el)}
       >
-        <div class={`inner ${this.show ? 'show' : ''}`} onMouseMove={e => this.onInnerMouseMove(e)} onClick={e => this.onInnerClick(e)}>
+        <div class={`inner ${this.show || this.pinned ? 'show' : ''}`} onMouseMove={e => this.onInnerMouseMove(e)} onClick={e => this.onInnerClick(e)}>
           <div class="background">
             <div class="list"></div>
             <div class="current-date-underline" ref={el => (this.currentDateUnderlineElement = el)}></div>
