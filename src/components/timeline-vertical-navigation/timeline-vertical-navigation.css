@@ -2,14 +2,25 @@
 :host {
   display: block;
 }
-.tvn-nav {
+.nav {
   position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
   width: 36px;
 }
-.tvn-inner {
+.background {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 48px;
+  background-color: #fff;
+}
+.dark-mode .background {
+  background-color: #000;
+}
+.inner {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -18,46 +29,53 @@
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
-.tvn-inner.show {
+.inner.show {
   opacity: 1;
 }
-.tvn-list {
+.list {
   position: absolute;
   top: 24px;
   bottom: 24px;
   right: 10px;
 }
-.tvn-current-date-underline {
-  background: #1a73e8;
+.current-date-underline {
+  background-color: #1a73e8;
   box-shadow: 0 1px 2px 0 rgb(60 64 67 / 30%), 0 2px 6px 2px rgb(60 64 67 / 15%);
   height: 2px;
   pointer-events: none;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 22px;
   transition: opacity 0.15s linear;
   width: 72px;
   z-index: 1;
 }
-.tvn-current-time-line {
-  background: #1a73e8;
+.dark-mode .current-date-underline {
+  background-color: #fff;
+}
+
+.current-time-line {
+  background-color: #1a73e8;
   height: 1px;
   pointer-events: none;
   position: absolute;
   right: 0;
-  top: 24px;
+  top: 23px;
   width: 40px;
   z-index: 1;
 }
-.tvn-current-date {
+.dark-mode .current-time-line {
+  background-color: #fff;
+}
+
+.current-date {
   display: flex;
-  height: 48px;
   pointer-events: none;
   position: absolute;
   right: 0;
   transition: opacity 0.15s linear;
 }
-.tvn-current-date-label {
+.current-date-label {
   background: hsla(0, 0%, 100%, 0.9);
   box-sizing: border-box;
   border-radius: 2px;
@@ -74,4 +92,8 @@
   font-size: 0.875rem;
   letter-spacing: 0.0178571429em;
   font-weight: 500;
+}
+.dark-mode .current-date-label {
+  color: #fff;
+  background: hsla(0, 0%, 0%, 0.8);
 }

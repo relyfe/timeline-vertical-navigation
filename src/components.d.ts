@@ -7,6 +7,8 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface TimelineVerticalNavigation {
+        "darkmode": boolean;
+        "dates": string;
     }
 }
 declare global {
@@ -22,6 +24,8 @@ declare global {
 }
 declare namespace LocalJSX {
     interface TimelineVerticalNavigation {
+        "darkmode"?: boolean;
+        "dates": string;
     }
     interface IntrinsicElements {
         "timeline-vertical-navigation": TimelineVerticalNavigation;
