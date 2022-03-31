@@ -35,7 +35,26 @@ const TimelineVerticalNavigation = () => {
     });
   };
 
-  return { init };
+  const setDates = (dates) => {
+    const tvnList = document.getElementsByClassName("tvn-list")[0];
+    let previousYear, previousMonth;
+    dates
+      .sort((a, b) => (a - b > 0 ? 1 : -1))
+      .map((date) => {
+        const month = date.getMonth();
+        const year = date.getYear();
+        console.log(date);
+        console.log(month);
+        if (month != previousMonth || year != previousYear) {
+          console.log("add", month, year);
+          //tvnList.appendChild(tvnMonth)
+        }
+        previousYear = year;
+        previousMonth = month;
+      });
+  };
+
+  return { init, setDates };
 };
 
 export default TimelineVerticalNavigation();
