@@ -1,7 +1,7 @@
 {
   "name": "timeline-vertical-navigation",
   "version": "0.0.1",
-  "description": "Stencil Component Starter",
+  "description": "Navigate in time same way as Google Photos",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
   "es2015": "dist/esm/index.mjs",
