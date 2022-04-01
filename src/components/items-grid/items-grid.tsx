@@ -10,6 +10,7 @@ export class ItemsGrid {
   minDate: Date;
   maxDate: Date;
   items = [];
+  container: HTMLElement;
 
   @Prop() dates!: string;
 
@@ -17,9 +18,28 @@ export class ItemsGrid {
     this.parseDates();
   }
 
+  getDatePosition(date: Date) {
+    const items = this.container.querySelectorAll('.item');
+    let position = 0;
+    items.forEach(item => {
+      const li = item as HTMLElement;
+      if (li.dataset.date === date.toISOString().split('T')[0]) {
+        console.log('found', li.offsetTop);
+        position = li.offsetTop;
+        return;
+      }
+    });
+    return position;
+  }
+
   @Method()
   async scrollToDate(date: Date) {
-    console.log('scrollToDate', date);
+    const position = this.getDatePosition(date);
+    console.log('position', position);
+    this.container.scrollTo({
+      top: position,
+      behavior: 'smooth',
+    });
   }
   @Watch('dates')
   parseDates() {
@@ -41,9 +61,9 @@ export class ItemsGrid {
 
   render() {
     return (
-      <ul>
+      <ul ref={el => (this.container = el)}>
         {this.datesArray.map(date => (
-          <li class="item">
+          <li class="item" data-date={date.toISOString().split('T')[0]}>
             {Intl.DateTimeFormat(undefined, {
               year: 'numeric',
               month: 'long',
