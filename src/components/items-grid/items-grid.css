@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  padding-right: 48px;
+}
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100%;
+  overflow-y: auto;
+  flex: 3;
+}
+.item {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style-type: none;
+  flex-grow: 1;
+  width: 30%;
+  height: 200px;
+  background-color: blanchedalmond;
+  margin: 20px;
+  font-family: Helvetica, Arial, sans-serif;
+  color: grey;
+  text-transform: capitalize;
+}

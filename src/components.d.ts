@@ -6,6 +6,10 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
+    interface ItemsGrid {
+        "dates": string;
+        "scrollToDate": (date: Date) => Promise<void>;
+    }
     interface TimelineVerticalNavigation {
         "darkmode": boolean;
         "dates": string;
@@ -14,6 +18,12 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLItemsGridElement extends Components.ItemsGrid, HTMLStencilElement {
+    }
+    var HTMLItemsGridElement: {
+        prototype: HTMLItemsGridElement;
+        new (): HTMLItemsGridElement;
+    };
     interface HTMLTimelineVerticalNavigationElement extends Components.TimelineVerticalNavigation, HTMLStencilElement {
     }
     var HTMLTimelineVerticalNavigationElement: {
@@ -21,10 +31,14 @@ declare global {
         new (): HTMLTimelineVerticalNavigationElement;
     };
     interface HTMLElementTagNameMap {
+        "items-grid": HTMLItemsGridElement;
         "timeline-vertical-navigation": HTMLTimelineVerticalNavigationElement;
     }
 }
 declare namespace LocalJSX {
+    interface ItemsGrid {
+        "dates": string;
+    }
     interface TimelineVerticalNavigation {
         "darkmode"?: boolean;
         "dates": string;
@@ -33,6 +47,7 @@ declare namespace LocalJSX {
         "pinned"?: boolean;
     }
     interface IntrinsicElements {
+        "items-grid": ItemsGrid;
         "timeline-vertical-navigation": TimelineVerticalNavigation;
     }
 }
@@ -40,6 +55,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "items-grid": LocalJSX.ItemsGrid & JSXBase.HTMLAttributes<HTMLItemsGridElement>;
             "timeline-vertical-navigation": LocalJSX.TimelineVerticalNavigation & JSXBase.HTMLAttributes<HTMLTimelineVerticalNavigationElement>;
         }
     }
