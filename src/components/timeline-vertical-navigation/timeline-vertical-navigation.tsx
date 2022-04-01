@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, h, Prop, State, Watch } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
 
 @Component({
   tag: 'timeline-vertical-navigation',
@@ -17,6 +17,7 @@ export class TimelineVerticalNavigation {
   @State() show: boolean = false;
   @State() movingRatio: number = 0;
   @State() selectedRatio: number = 0;
+  @State() innerPressed: boolean = false;
 
   @Prop() dates!: string;
   @Prop() pinned: boolean = false;
@@ -41,6 +42,12 @@ export class TimelineVerticalNavigation {
     if (!this.show) {
       this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = this.currentTimeLineElement.style.transform;
     }
+  }
+
+  @Method()
+  async updateSelectedDate(date: Date) {
+    this.selectedRatio = this.movingRatio = 1 - (date.getTime() - this.minDate.getTime()) / (this.maxDate.getTime() - this.minDate.getTime());
+    this.onWindowResize();
   }
 
   @Watch('dates')
@@ -73,13 +80,15 @@ export class TimelineVerticalNavigation {
     const { translateY, ratio } = this.calculateOffsetAndRatio(e.offsetY);
     this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = `translateY(${translateY}px)`;
     this.movingRatio = ratio;
+    if (this.innerPressed) this.onInnerPressed(e);
   };
 
   onNavMouseLeave = () => {
     this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = this.currentTimeLineElement.style.transform;
   };
 
-  onInnerClick = e => {
+  onInnerPressed = e => {
+    this.innerPressed = true;
     const { translateY, ratio } = this.calculateOffsetAndRatio(e.offsetY);
     this.currentTimeLineElement.style.transform = `translateY(${translateY}px)`;
     this.selectedRatio = ratio;
@@ -122,7 +131,14 @@ export class TimelineVerticalNavigation {
         }}
         ref={el => (this.navElement = el)}
       >
-        <div class={`inner ${this.show || this.pinned ? 'show' : ''}`} onMouseMove={e => this.onInnerMouseMove(e)} onClick={e => this.onInnerClick(e)}>
+        <div
+          class={`inner ${this.show || this.pinned ? 'show' : ''}`}
+          onMouseMove={e => this.onInnerMouseMove(e)}
+          onMouseDown={e => this.onInnerPressed(e)}
+          onMouseUp={() => {
+            this.innerPressed = false;
+          }}
+        >
           <div class="background">
             <div class="list"></div>
             <div class="current-date-underline" ref={el => (this.currentDateUnderlineElement = el)}></div>

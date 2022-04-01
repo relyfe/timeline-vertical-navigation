@@ -41,6 +41,9 @@
       itemsGrid.addEventListener('scrolledToDate', e => {
         const firstDateVisible = e.detail;
         console.log('first date visible', firstDateVisible);
+
+        const timelineVerticalNavigation = document.querySelector('timeline-vertical-navigation');
+        timelineVerticalNavigation.updateSelectedDate(firstDateVisible);
       });
     </script>
   </body>

@@ -13,21 +13,20 @@ export class ItemsGrid {
   container: HTMLElement;
 
   @Prop() dates!: string;
+  @Prop() smoothscroll: boolean = false;
+
+  @Event() scrolledToDate: EventEmitter<Date>;
 
   componentWillLoad() {
     this.parseDates();
   }
 
   getDatePosition(date: Date) {
-    const items = this.container.querySelectorAll('.item');
     let position = 0;
+    const items = this.container.querySelectorAll('.item');
     items.forEach(item => {
       const li = item as HTMLElement;
-      if (li.dataset.date === date.toISOString().split('T')[0]) {
-        console.log('found', li.offsetTop);
-        position = li.offsetTop;
-        return;
-      }
+      if (position === 0 && li.dataset.date === date.toISOString()) position = li.offsetTop;
     });
     return position;
   }
@@ -38,9 +37,10 @@ export class ItemsGrid {
     console.log('position', position);
     this.container.scrollTo({
       top: position,
-      behavior: 'smooth',
+      behavior: this.smoothscroll ? 'smooth' : 'auto',
     });
   }
+
   @Watch('dates')
   parseDates() {
     if (this.dates) {
@@ -59,11 +59,26 @@ export class ItemsGrid {
     }
   }
 
+  getFirstVisibleDateAt(position) {
+    const items = this.container.querySelectorAll('.item');
+    let firstVisibleDate: Date;
+    items.forEach(item => {
+      const li = item as HTMLElement;
+      if (!firstVisibleDate && li.offsetTop > position) firstVisibleDate = new Date(li.dataset.date);
+    });
+    return firstVisibleDate;
+  }
+
+  onScroll(e) {
+    const firstVisibleDate = this.getFirstVisibleDateAt(e.target.scrollTop);
+    this.scrolledToDate.emit(firstVisibleDate);
+  }
+
   render() {
     return (
-      <ul ref={el => (this.container = el)}>
+      <ul ref={el => (this.container = el)} onScroll={e => this.onScroll(e)}>
         {this.datesArray.map(date => (
-          <li class="item" data-date={date.toISOString().split('T')[0]}>
+          <li class="item" data-date={date.toISOString()}>
             {Intl.DateTimeFormat(undefined, {
               year: 'numeric',
               month: 'long',

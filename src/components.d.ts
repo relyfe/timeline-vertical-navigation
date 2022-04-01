@@ -9,12 +9,14 @@ export namespace Components {
     interface ItemsGrid {
         "dates": string;
         "scrollToDate": (date: Date) => Promise<void>;
+        "smoothscroll": boolean;
     }
     interface TimelineVerticalNavigation {
         "darkmode": boolean;
         "dates": string;
         "lineartime": boolean;
         "pinned": boolean;
+        "updateSelectedDate": (date: Date) => Promise<void>;
     }
 }
 declare global {
@@ -38,6 +40,8 @@ declare global {
 declare namespace LocalJSX {
     interface ItemsGrid {
         "dates": string;
+        "onScrolledToDate"?: (event: CustomEvent<Date>) => void;
+        "smoothscroll"?: boolean;
     }
     interface TimelineVerticalNavigation {
         "darkmode"?: boolean;
