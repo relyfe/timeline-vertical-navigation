@@ -11,6 +11,7 @@ export class ItemsGrid {
   maxDate: Date;
   items = [];
   container: HTMLElement;
+  preventOnScroll: boolean = false;
 
   @Prop() dates!: string;
   @Prop() smoothscroll: boolean = false;
@@ -26,7 +27,7 @@ export class ItemsGrid {
     const items = this.container.querySelectorAll('.item');
     items.forEach(item => {
       const li = item as HTMLElement;
-      if (position === 0 && li.dataset.date === date.toISOString()) position = li.offsetTop;
+      if (li.dataset.date === date.toUTCString()) position = li.offsetTop;
     });
     return position;
   }
@@ -34,11 +35,14 @@ export class ItemsGrid {
   @Method()
   async scrollToDate(date: Date) {
     const position = this.getDatePosition(date);
-    console.log('position', position);
+    this.preventOnScroll = true;
     this.container.scrollTo({
       top: position,
       behavior: this.smoothscroll ? 'smooth' : 'auto',
     });
+    setTimeout(() => {
+      this.preventOnScroll = false;
+    }, 50);
   }
 
   @Watch('dates')
@@ -50,7 +54,7 @@ export class ItemsGrid {
         .replace(', ', ',')
         .split(',')
         .map(date => {
-          const formatedDate = new Date(date);
+          const formatedDate = new Date(`${date} 00:00:00 UTC`);
           if (!this.minDate || formatedDate.getTime() < this.minDate.getTime()) this.minDate = formatedDate;
           if (!this.maxDate || formatedDate.getTime() > this.maxDate.getTime()) this.maxDate = formatedDate;
           return formatedDate;
@@ -70,6 +74,8 @@ export class ItemsGrid {
   }
 
   onScroll(e) {
+    console.log(this.preventOnScroll);
+    if (this.preventOnScroll) return;
     const firstVisibleDate = this.getFirstVisibleDateAt(e.target.scrollTop);
     this.scrolledToDate.emit(firstVisibleDate);
   }
@@ -78,7 +84,7 @@ export class ItemsGrid {
     return (
       <ul ref={el => (this.container = el)} onScroll={e => this.onScroll(e)}>
         {this.datesArray.map(date => (
-          <li class="item" data-date={date.toISOString()}>
+          <li class="item" data-date={date.toUTCString()}>
             {Intl.DateTimeFormat(undefined, {
               year: 'numeric',
               month: 'long',

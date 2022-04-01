@@ -19,10 +19,9 @@ export class TimelineVerticalNavigation {
   @State() selectedRatio: number = 0;
   @State() innerPressed: boolean = false;
 
-  @Prop() dates!: string;
+  @Prop() dates!: string | Date[];
   @Prop() pinned: boolean = false;
   @Prop() darkmode: boolean = false;
-  @Prop() lineartime: boolean = false;
 
   @Event() dateSelected: EventEmitter<Date>;
 
@@ -46,26 +45,25 @@ export class TimelineVerticalNavigation {
 
   @Method()
   async updateSelectedDate(date: Date) {
-    this.selectedRatio = this.movingRatio = 1 - (date.getTime() - this.minDate.getTime()) / (this.maxDate.getTime() - this.minDate.getTime());
+    console.log('updateSelectedDate', date);
+    this.selectedRatio = this.movingRatio = this.getIndexRatioByDate(date);
     this.onWindowResize();
+  }
+
+  getIndexRatioByDate(date: Date) {
+    const index = this.datesArray.findIndex(d => d.getTime() === date.getTime());
+    return index / (this.datesArray.length - 1);
   }
 
   @Watch('dates')
   parseDates() {
-    if (this.dates) {
-      this.datesArray = this.dates
-        .replace('[', '')
-        .replace(']', '')
-        .replace(', ', ',')
-        .split(',')
-        .map(date => {
-          const formatedDate = new Date(date);
-          if (!this.minDate || formatedDate.getTime() < this.minDate.getTime()) this.minDate = formatedDate;
-          if (!this.maxDate || formatedDate.getTime() > this.maxDate.getTime()) this.maxDate = formatedDate;
-          return formatedDate;
-        })
-        .sort((a, b) => (b.getTime() - a.getTime() > 0 ? 1 : -1));
+    if (this.dates && typeof this.dates === 'string') {
+      const cleanedDatesString = this.dates.replace(/\s|\[|\]/g, '');
+      this.datesArray = cleanedDatesString.split(',').map(date => new Date(`${date} 00:00:00 UTC`));
     }
+    this.datesArray = this.datesArray.sort((a, b) => (b.getTime() - a.getTime() > 0 ? 1 : -1));
+    this.minDate = this.datesArray[this.datesArray.length - 1];
+    this.maxDate = this.datesArray[0];
   }
 
   calculateOffsetAndRatio(offsetY) {
@@ -98,16 +96,6 @@ export class TimelineVerticalNavigation {
 
   getDateClothestToRatio = () => {
     const ratio = this.show ? this.movingRatio : this.selectedRatio;
-    const dateRatio = this.minDate.getTime() + ratio * (this.maxDate.getTime() - this.minDate.getTime());
-
-    if (this.lineartime) {
-      return this.datesArray.reduce((prev, curr) => {
-        const prevDiff = Math.abs(prev.getTime() - dateRatio);
-        const currDiff = Math.abs(curr.getTime() - dateRatio);
-        return prevDiff < currDiff ? prev : curr;
-      });
-    }
-
     const arrayRatio = (this.datesArray.length - 1) * ratio;
     return this.datesArray[Math.round(arrayRatio)];
   };
