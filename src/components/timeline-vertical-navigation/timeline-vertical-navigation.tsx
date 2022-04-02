@@ -74,24 +74,29 @@ export class TimelineVerticalNavigation {
     return { translateY, ratio: (translateY - min) / (max - min) };
   }
 
-  onInnerMouseMove = e => {
+  onInnerMove = e => {
+    e.preventDefault();
     const { translateY, ratio } = this.calculateOffsetAndRatio(e.offsetY);
     this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = `translateY(${translateY}px)`;
     this.movingRatio = ratio;
-    if (this.innerPressed) this.onInnerPressed(e);
+    if (this.innerPressed) this.onInnerDown(e);
   };
 
-  onNavMouseLeave = () => {
-    this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = this.currentTimeLineElement.style.transform;
-  };
-
-  onInnerPressed = e => {
+  onInnerDown = e => {
     this.innerPressed = true;
     const { translateY, ratio } = this.calculateOffsetAndRatio(e.offsetY);
     this.currentTimeLineElement.style.transform = `translateY(${translateY}px)`;
     this.selectedRatio = ratio;
     const clothestDate = this.getDateClothestToRatio();
     this.dateSelected.emit(clothestDate);
+  };
+
+  onInnerUp = () => {
+    this.innerPressed = false;
+  };
+
+  onNavMouseLeave = () => {
+    this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = this.currentTimeLineElement.style.transform;
   };
 
   getDateClothestToRatio = () => {
@@ -121,14 +126,19 @@ export class TimelineVerticalNavigation {
       >
         <div
           class={`inner ${this.show || this.pinned ? 'show' : ''}`}
-          onMouseMove={e => this.onInnerMouseMove(e)}
-          onMouseDown={e => this.onInnerPressed(e)}
-          onMouseUp={() => {
-            this.innerPressed = false;
-          }}
+          onMouseMove={e => this.onInnerMove(e)}
+          onTouchMove={e => this.onInnerMove(e)}
+          onMouseDown={e => this.onInnerDown(e)}
+          onTouchStart={e => this.onInnerDown(e)}
+          onMouseUp={() => this.onInnerUp()}
+          onTouchEnd={() => this.onInnerUp()}
         >
           <div class="background">
-            <div class="list"></div>
+            <div class="list">
+              <div class="list-item">
+                <div class="list-item-year">2022</div>
+              </div>
+            </div>
             <div class="current-date-underline" ref={el => (this.currentDateUnderlineElement = el)}></div>
             <div
               class="current-time-line"

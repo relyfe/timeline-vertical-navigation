@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, h, Method, Prop, State, Watch } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Method, Prop, Watch } from '@stencil/core';
 
 @Component({
   tag: 'items-grid',
