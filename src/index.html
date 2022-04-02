@@ -19,14 +19,12 @@
     </script>
 
     <timeline-vertical-navigation
-      pinned="true"
       dates="2020-03-31, 2022-09-12, 2022-04-01, 2022-03-12, 2022-03-13, 2022-03-14, 2022-03-15, 2000-01-01, 2010-12-01, 2013-10-01, 2010-11-21, 1998-07-28, 2000-01-01, 2000-01-11, 2002-03-11, 2002-04-11, 2002-04-12, 2025-01-01"
     ></timeline-vertical-navigation>
     <script>
       const timelineVerticalNavigation = document.querySelector('timeline-vertical-navigation');
       timelineVerticalNavigation.addEventListener('dateSelected', e => {
         const selectedDate = e.detail;
-        console.log('selected date', selectedDate);
 
         const itemsGrid = document.querySelector('items-grid');
         itemsGrid.scrollToDate(selectedDate);
@@ -40,7 +38,6 @@
       const itemsGrid = document.querySelector('items-grid');
       itemsGrid.addEventListener('scrolledToDate', e => {
         const firstDateVisible = e.detail;
-        console.log('first date visible', firstDateVisible);
 
         const timelineVerticalNavigation = document.querySelector('timeline-vertical-navigation');
         timelineVerticalNavigation.updateSelectedDate(firstDateVisible);

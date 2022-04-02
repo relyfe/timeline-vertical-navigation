@@ -11,9 +11,12 @@ export class TimelineVerticalNavigation {
   currentDateElement!: HTMLElement;
   currentTimeLineElement!: HTMLElement;
   datesArray: Date[];
+  years: number[];
   minDate: Date;
   maxDate: Date;
+  timeOutScroll: any;
 
+  @State() isOver: boolean = false;
   @State() show: boolean = false;
   @State() movingRatio: number = 0;
   @State() selectedRatio: number = 0;
@@ -22,6 +25,7 @@ export class TimelineVerticalNavigation {
   @Prop() dates!: string | Date[];
   @Prop() pinned: boolean = false;
   @Prop() darkmode: boolean = false;
+  @Prop() opaquebackground: boolean = false;
 
   @Event() dateSelected: EventEmitter<Date>;
 
@@ -32,22 +36,39 @@ export class TimelineVerticalNavigation {
     });
   }
 
+  componentDidLoad() {
+    this.onWindowResize();
+  }
+
   onWindowResize() {
     const ratio = this.show ? this.movingRatio : this.selectedRatio;
     const currentDateHeight = this.currentDateElement.clientHeight;
     const min = 0;
     const max = this.navElement.clientHeight - currentDateHeight * 2;
     this.currentTimeLineElement.style.transform = `translateY(${min + (max - min) * ratio}px)`;
-    if (!this.show) {
-      this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = this.currentTimeLineElement.style.transform;
+    this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = this.currentTimeLineElement.style.transform;
+    const yearElements = this.navElement.getElementsByClassName('list-item');
+    for (let yearIndex = 0; yearIndex < yearElements.length; yearIndex++) {
+      const yearElement = yearElements[yearIndex] as HTMLElement;
+      const year = Number(yearElement.dataset.year);
+      const firstDateOfYear = this.getFirstDateOfYear(year);
+      yearElement.style.transform = `translateY(${min + (max - min) * this.getIndexRatioByDate(firstDateOfYear)}px)`;
     }
+  }
+
+  getFirstDateOfYear(year: number) {
+    return this.datesArray.find(date => date.getFullYear() === year);
   }
 
   @Method()
   async updateSelectedDate(date: Date) {
-    console.log('updateSelectedDate', date);
     this.selectedRatio = this.movingRatio = this.getIndexRatioByDate(date);
     this.onWindowResize();
+    this.show = true;
+    if (this.timeOutScroll) clearTimeout(this.timeOutScroll);
+    this.timeOutScroll = setTimeout(() => {
+      if (!this.isOver) this.show = false;
+    }, 3000);
   }
 
   getIndexRatioByDate(date: Date) {
@@ -64,6 +85,7 @@ export class TimelineVerticalNavigation {
     this.datesArray = this.datesArray.sort((a, b) => (b.getTime() - a.getTime() > 0 ? 1 : -1));
     this.minDate = this.datesArray[this.datesArray.length - 1];
     this.maxDate = this.datesArray[0];
+    this.years = Array.from(new Set(this.datesArray.map(date => date.getFullYear())));
   }
 
   calculateOffsetAndRatio(offsetY) {
@@ -74,17 +96,32 @@ export class TimelineVerticalNavigation {
     return { translateY, ratio: (translateY - min) / (max - min) };
   }
 
-  onInnerMove = e => {
+  onInnerMouseMove = e => {
+    this.onInnerMove(e.offsetY);
+  };
+  onInnerTouchMove = e => {
     e.preventDefault();
-    const { translateY, ratio } = this.calculateOffsetAndRatio(e.offsetY);
+    this.onInnerMove(this.getTouchOffsetY(e));
+  };
+  onInnerMove = offsetY => {
+    const { translateY, ratio } = this.calculateOffsetAndRatio(offsetY);
     this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = `translateY(${translateY}px)`;
     this.movingRatio = ratio;
-    if (this.innerPressed) this.onInnerDown(e);
+    if (this.innerPressed) this.onInnerDown(offsetY);
   };
 
-  onInnerDown = e => {
+  onInnerMouseDown = e => {
+    this.onInnerDown(e.offsetY);
+  };
+  getTouchOffsetY = e => {
+    return e.touches[0].clientY - e.target.getBoundingClientRect().y;
+  };
+  onInnerTouchDown = e => {
+    this.onInnerDown(this.getTouchOffsetY(e));
+  };
+  onInnerDown = offsetY => {
     this.innerPressed = true;
-    const { translateY, ratio } = this.calculateOffsetAndRatio(e.offsetY);
+    const { translateY, ratio } = this.calculateOffsetAndRatio(offsetY);
     this.currentTimeLineElement.style.transform = `translateY(${translateY}px)`;
     this.selectedRatio = ratio;
     const clothestDate = this.getDateClothestToRatio();
@@ -115,10 +152,18 @@ export class TimelineVerticalNavigation {
         aria-valuenow={this.selectedRatio}
         aria-orientation="vertical"
         aria-valuetext=""
+        onTouchStart={() => {
+          this.isOver = true;
+        }}
+        onTouchEnd={() => {
+          this.isOver = false;
+        }}
         onMouseEnter={() => {
+          this.isOver = true;
           this.show = true;
         }}
         onMouseLeave={() => {
+          this.isOver = false;
           this.show = false;
           this.onNavMouseLeave();
         }}
@@ -126,18 +171,20 @@ export class TimelineVerticalNavigation {
       >
         <div
           class={`inner ${this.show || this.pinned ? 'show' : ''}`}
-          onMouseMove={e => this.onInnerMove(e)}
-          onTouchMove={e => this.onInnerMove(e)}
-          onMouseDown={e => this.onInnerDown(e)}
-          onTouchStart={e => this.onInnerDown(e)}
+          onMouseMove={e => this.onInnerMouseMove(e)}
+          onTouchMove={e => this.onInnerTouchMove(e)}
+          onMouseDown={e => this.onInnerMouseDown(e)}
+          onTouchStart={e => this.onInnerTouchDown(e)}
           onMouseUp={() => this.onInnerUp()}
           onTouchEnd={() => this.onInnerUp()}
         >
-          <div class="background">
+          <div class={`${this.opaquebackground ? 'background' : ''}`}>
             <div class="list">
-              <div class="list-item">
-                <div class="list-item-year">2022</div>
-              </div>
+              {this.years.map(year => (
+                <div class="list-item" data-year={year}>
+                  <div class="list-item-year">{year}</div>
+                </div>
+              ))}
             </div>
             <div class="current-date-underline" ref={el => (this.currentDateUnderlineElement = el)}></div>
             <div

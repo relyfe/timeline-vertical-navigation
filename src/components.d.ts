@@ -14,6 +14,7 @@ export namespace Components {
     interface TimelineVerticalNavigation {
         "darkmode": boolean;
         "dates": string | Date[];
+        "opaquebackground": boolean;
         "pinned": boolean;
         "updateSelectedDate": (date: Date) => Promise<void>;
     }
@@ -46,6 +47,7 @@ declare namespace LocalJSX {
         "darkmode"?: boolean;
         "dates": string | Date[];
         "onDateSelected"?: (event: CustomEvent<Date>) => void;
+        "opaquebackground"?: boolean;
         "pinned"?: boolean;
     }
     interface IntrinsicElements {

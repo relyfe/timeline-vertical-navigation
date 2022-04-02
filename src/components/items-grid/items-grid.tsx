@@ -74,7 +74,6 @@ export class ItemsGrid {
   }
 
   onScroll(e) {
-    console.log(this.preventOnScroll);
     if (this.preventOnScroll) return;
     const firstVisibleDate = this.getFirstVisibleDateAt(e.target.scrollTop);
     this.scrolledToDate.emit(firstVisibleDate);

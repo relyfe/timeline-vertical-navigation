@@ -1,6 +1,5 @@
 :host {
   display: block;
-  padding-right: 48px;
 }
 ul {
   display: flex;
@@ -11,6 +10,11 @@ ul {
   width: 100%;
   overflow-y: auto;
   flex: 3;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+UL::-webkit-scrollbar {
+  display: none;
 }
 .item {
   display: flex;

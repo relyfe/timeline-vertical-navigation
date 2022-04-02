@@ -59,6 +59,7 @@
   right: 0;
   white-space: nowrap;
   z-index: 2;
+  pointer-events: none;
 }
 .list-item-year {
   transform: translateX(8px);
