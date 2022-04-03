@@ -48,11 +48,16 @@ export class TimelineVerticalNavigation {
     this.currentTimeLineElement.style.transform = `translateY(${min + (max - min) * ratio}px)`;
     this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = this.currentTimeLineElement.style.transform;
     const yearElements = this.navElement.getElementsByClassName('list-item');
+    let previousPosition = -Infinity;
     for (let yearIndex = 0; yearIndex < yearElements.length; yearIndex++) {
       const yearElement = yearElements[yearIndex] as HTMLElement;
+      const labelElement = yearElement.getElementsByClassName('list-item-year')[0] as HTMLElement;
       const year = Number(yearElement.dataset.year);
       const firstDateOfYear = this.getFirstDateOfYear(year);
-      yearElement.style.transform = `translateY(${min + (max - min) * this.getIndexRatioByDate(firstDateOfYear)}px)`;
+      const position = min + (max - min) * this.getIndexRatioByDate(firstDateOfYear);
+      yearElement.style.transform = `translateY(${position}px)`;
+      yearElement.style.visibility = position > previousPosition + labelElement.clientHeight ? 'visible' : 'hidden';
+      previousPosition = position;
     }
   }
 
