@@ -1,15 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
 :host {
   display: block;
-  --color-lightmode-lines: #166cdd;
-  --color-lightmode-background: #fff;
-  --color-lightmode-text: #3c4043;
-  --color-lightmode-label-background: hsla(0, 0%, 100%, 0.8);
+  --lightmode-lines: #166cdd;
+  --lightmode-background: #fff;
+  --lightmode-text: #3c4043;
+  --lightmode-label-background: hsla(0, 0%, 100%, 0.8);
+  --lightmode-year-background: hsla(0, 0%, 100%, 0.65);
 
-  --color-darkmode-lines: #267ff3;
-  --color-darkmode-background: #000;
-  --color-darkmode-text: #fff;
-  --color-darkmode-label-background: hsla(0, 0%, 0%, 0.8);
+  --darkmode-lines: #267ff3;
+  --darkmode-background: #000;
+  --darkmode-text: #fff;
+  --darkmode-label-background: hsla(0, 0%, 0%, 0.8);
+  --darkmode-year-background: hsla(0, 0%, 0%, 0.65);
 
   user-select: none;
 }
@@ -27,10 +29,10 @@
   bottom: 0;
   right: 0;
   width: 48px;
-  background-color: var(--color-lightmode-background);
+  background-color: var(--lightmode-background);
 }
 .dark-mode .background {
-  background-color: var(--color-darkmode-background);
+  background-color: var(--darkmode-background);
 }
 .inner {
   position: absolute;
@@ -66,7 +68,8 @@
   padding: 0 8px;
   border-radius: 10px;
   cursor: row-resize;
-  color: var(--color-lightmode-text);
+  color: var(--lightmode-text);
+  background-color: var(--lightmode-year-background);
   position: absolute;
   right: 0;
   line-height: 20px;
@@ -77,10 +80,11 @@
   text-transform: uppercase;
 }
 .dark-mode .list-item-year {
-  color: var(--color-darkmode-text);
+  color: var(--darkmode-text);
+  background-color: var(--darkmode-year-background);
 }
 .current-date-underline {
-  background-color: var(--color-lightmode-lines);
+  background-color: var(--lightmode-lines);
   box-shadow: 0 1px 2px 0 rgb(60 64 67 / 30%), 0 2px 6px 2px rgb(60 64 67 / 15%);
   height: 2px;
   pointer-events: none;
@@ -92,11 +96,11 @@
   z-index: 3;
 }
 .dark-mode .current-date-underline {
-  background-color: var(--color-darkmode-lines);
+  background-color: var(--darkmode-lines);
 }
 
 .current-time-line {
-  background-color: var(--color-lightmode-lines);
+  background-color: var(--lightmode-lines);
   height: 1px;
   pointer-events: none;
   position: absolute;
@@ -106,7 +110,7 @@
   z-index: 1;
 }
 .dark-mode .current-time-line {
-  background-color: var(--color-darkmode-lines);
+  background-color: var(--darkmode-lines);
 }
 
 .current-date {
@@ -120,8 +124,8 @@
 .current-date-label {
   box-sizing: border-box;
   border-radius: 2px;
-  color: var(--color-lightmode-text);
-  background-color: var(--color-lightmode-label-background);
+  color: var(--lightmode-text);
+  background-color: var(--lightmode-label-background);
   height: 24px;
   min-width: 0;
   padding: 2px 10px;
@@ -136,6 +140,6 @@
   font-weight: 500;
 }
 .dark-mode .current-date-label {
-  color: var(--color-darkmode-text);
-  background-color: var(--color-darkmode-label-background);
+  color: var(--darkmode-text);
+  background-color: var(--darkmode-label-background);
 }
