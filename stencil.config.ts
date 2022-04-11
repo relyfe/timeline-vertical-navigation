@@ -3,6 +3,7 @@ import { Config } from '@stencil/core';
 export const config: Config = {
   namespace: 'timeline-vertical-navigation',
   outputTargets: [
+    { type: 'docs-readme' },
     {
       type: 'dist',
       esmLoaderPath: '../loader',
