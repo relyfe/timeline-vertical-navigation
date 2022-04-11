@@ -1,6 +1,7 @@
 # timeline-vertical-navigation
 
 Navigate in time same way as Google Photos.
+_Built with [StencilJS](https://stenciljs.com/)_
 
 [<img src="screenshot.png" width="300" alt=""/>](https://timeline-vertical-navigation.herokuapp.com/)
 
@@ -47,6 +48,4 @@ For the demo, there is an "items-grid" component you can find in source, this is
 </script>
 ```
 
-[Online demo](https://timeline-vertical-navigation.herokuapp.com/)
-
-_Built with [StencilJS](https://stenciljs.com/)_
+### [Online demo](https://timeline-vertical-navigation.herokuapp.com/)
