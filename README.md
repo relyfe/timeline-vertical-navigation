@@ -9,7 +9,7 @@ Navigate in time same way as Google Photos.
 | Property             | Attribute          | Description | Type               | Default     |
 | -------------------- | ------------------ | ----------- | ------------------ | ----------- |
 | `darkmode`           | `darkmode`         |             | `boolean`          | `false`     |
-| `dates` _(required)_ | `dates`            |             | `Date[] \| string` | `undefined` |
+| `dates` _(required)_ | `dates`            |             | `Date[] or string` | `undefined` |
 | `opaquebackground`   | `opaquebackground` |             | `boolean`          | `false`     |
 | `pinned`             | `pinned`           |             | `boolean`          | `false`     |
 
@@ -21,13 +21,11 @@ Navigate in time same way as Google Photos.
 
 ## Methods
 
-`updateSelectedDate(date: Date) => Promise<void>`
-
-#### Returns
-
-Type: `Promise<void>`
+`updateSelectedDate(date: Date) => void`
 
 ## Example with native HTML & JavaScript
+
+For the demo, there is an "items-grid" component you can find in source, this is an example of what your scrollable component could be.
 
 ```html
 <timeline-vertical-navigation
@@ -37,8 +35,15 @@ Type: `Promise<void>`
   const timelineVerticalNavigation = document.querySelector('timeline-vertical-navigation');
   timelineVerticalNavigation.addEventListener('dateSelected', e => {
     const selectedDate = e.detail;
-    {yourComponent}.scrollToDate(selectedDate);
+    // You can scroll into your scrollable component to the selected date
+    {yourScrollableComponent}.scrollToDate(selectedDate);
   });
+  // Then your scrollable component need to dispatch which date is currently displayed in order to update the selected date
+   {yourScrollableComponent}.addEventListener('scrolledToDate', e => {
+        const firstDateVisible = e.detail;
+        const timelineVerticalNavigation = document.querySelector('timeline-vertical-navigation');
+        timelineVerticalNavigation.updateSelectedDate(firstDateVisible);
+      });
 </script>
 ```
 
