@@ -1,6 +1,6 @@
 {
   "name": "timeline-vertical-navigation",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Navigate in time same way as Google Photos",
   "author": {
     "name": "Matthieu Chavigny @ ReLyfe Group",
@@ -16,7 +16,7 @@
   "unpkg": "dist/timeline-vertical-navigation/timeline-vertical-navigation.esm.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ionic-team/stencil-component-starter.git"
+    "url": "https://github.com/relyfe/timeline-vertical-navigation"
   },
   "files": [
     "dist/",
