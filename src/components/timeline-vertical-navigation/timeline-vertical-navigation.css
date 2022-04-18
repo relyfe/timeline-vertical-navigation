@@ -63,7 +63,7 @@
   z-index: 2;
   pointer-events: none;
 }
-.list-item-year {
+.label-year {
   transform: translateX(8px);
   padding: 0 8px;
   border-radius: 10px;
@@ -79,9 +79,15 @@
   font-weight: 500;
   text-transform: uppercase;
 }
-.dark-mode .list-item-year {
+.dark-mode .label-year {
   color: var(--darkmode-text);
   background-color: var(--darkmode-year-background);
+}
+.dot {
+  background: #dadce0;
+  border-radius: 50%;
+  height: 4px;
+  width: 4px;
 }
 .current-date-underline {
   background-color: var(--lightmode-lines);

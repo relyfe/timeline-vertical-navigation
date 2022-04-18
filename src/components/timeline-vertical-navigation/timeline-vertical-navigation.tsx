@@ -21,6 +21,7 @@ export class TimelineVerticalNavigation {
   @State() movingRatio: number = 0;
   @State() selectedRatio: number = 0;
   @State() innerPressed: boolean = false;
+  @State() dotsPosition: number[] = [];
 
   @Prop() dates!: string | Date[];
   @Prop() pinned: boolean = false;
@@ -47,19 +48,34 @@ export class TimelineVerticalNavigation {
     const max = this.navElement.clientHeight - currentDateHeight * 2;
     this.currentTimeLineElement.style.transform = `translateY(${min + (max - min) * ratio}px)`;
     this.currentDateUnderlineElement.style.transform = this.currentDateElement.style.transform = this.currentTimeLineElement.style.transform;
-    const yearElements = this.navElement.getElementsByClassName('list-item');
+    const yearElements = this.navElement.getElementsByClassName('list-item-year');
     let previousPosition = -Infinity;
+    let previousIndexRatio = 0;
+    const dotsPosition: number[] = [];
     for (let yearIndex = 0; yearIndex < yearElements.length; yearIndex++) {
       const yearElement = yearElements[yearIndex] as HTMLElement;
-      const labelElement = yearElement.getElementsByClassName('list-item-year')[0] as HTMLElement;
+      const labelElement = yearElement.getElementsByClassName('label-year')[0] as HTMLElement;
       const year = Number(yearElement.dataset.year);
       const firstDateOfYear = this.getFirstDateOfYear(year);
-      const position = min + (max - min) * this.getIndexRatioByDate(firstDateOfYear);
+      previousIndexRatio = this.getIndexRatioByDate(firstDateOfYear);
+      const position = min + (max - min) * previousIndexRatio;
+      const visible = position > previousPosition + labelElement?.clientHeight;
+      yearElement.style.visibility = visible ? 'visible' : 'hidden';
       yearElement.style.transform = `translateY(${position}px)`;
-      yearElement.style.visibility = position > previousPosition + labelElement.clientHeight ? 'visible' : 'hidden';
+      if (previousPosition !== -Infinity) dotsPosition.push(...this.getDotsPosition(previousPosition, position));
       previousPosition = position;
     }
+    this.dotsPosition = dotsPosition;
   }
+  getDotsPosition = (previousPosition, position) => {
+    const dotHeight = 12;
+    const dotsCount = Math.floor((position - 25 - previousPosition) / dotHeight);
+    const positions = [];
+    for (let dotIndex = 0; dotIndex < dotsCount; dotIndex++) {
+      positions.push(dotIndex * dotHeight + previousPosition + 25);
+    }
+    return positions;
+  };
 
   getFirstDateOfYear(year: number) {
     return this.datesArray.find(date => date.getFullYear() === year);
@@ -186,8 +202,13 @@ export class TimelineVerticalNavigation {
           <div class={`${this.opaquebackground ? 'background' : ''}`}>
             <div class="list">
               {this.years.map(year => (
-                <div class="list-item" data-year={year}>
-                  <div class="list-item-year">{year}</div>
+                <div class="list-item list-item-year" data-year={year}>
+                  <div class="label-year">{year}</div>
+                </div>
+              ))}
+              {this.dotsPosition.map(position => (
+                <div class="list-item list-item-dot" style={{ transform: `translateY(${position}px)` }}>
+                  <div class="dot"></div>
                 </div>
               ))}
             </div>
