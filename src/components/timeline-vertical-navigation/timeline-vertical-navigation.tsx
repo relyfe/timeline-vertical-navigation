@@ -99,9 +99,15 @@ export class TimelineVerticalNavigation {
 
   @Watch('dates')
   parseDates() {
-    if (this.dates && typeof this.dates === 'string') {
-      const cleanedDatesString = this.dates.replace(/\s|\[|\]/g, '');
-      this.datesArray = cleanedDatesString.split(',').map(date => new Date(`${date} 00:00:00 UTC`));
+    if (!this.dates) return;
+    switch (typeof this.dates) {
+      case 'string':
+        const cleanedDatesString = this.dates.replace(/\s|\[|\]/g, '');
+        this.datesArray = cleanedDatesString.split(',').map(date => new Date(`${date} 00:00:00 UTC`));
+        break;
+      case 'object':
+        this.datesArray = this.dates as Date[];
+        break;
     }
     this.datesArray = this.datesArray.sort((a, b) => (b.getTime() - a.getTime() > 0 ? 1 : -1));
     this.minDate = this.datesArray[this.datesArray.length - 1];

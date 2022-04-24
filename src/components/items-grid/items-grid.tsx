@@ -47,20 +47,17 @@ export class ItemsGrid {
 
   @Watch('dates')
   parseDates() {
-    if (this.dates) {
-      this.datesArray = this.dates
-        .replace('[', '')
-        .replace(']', '')
-        .replace(', ', ',')
-        .split(',')
-        .map(date => {
-          const formatedDate = new Date(`${date} 00:00:00 UTC`);
-          if (!this.minDate || formatedDate.getTime() < this.minDate.getTime()) this.minDate = formatedDate;
-          if (!this.maxDate || formatedDate.getTime() > this.maxDate.getTime()) this.maxDate = formatedDate;
-          return formatedDate;
-        })
-        .sort((a, b) => (b.getTime() - a.getTime() > 0 ? 1 : -1));
+    if (!this.dates) return;
+    switch (typeof this.dates) {
+      case 'string':
+        const cleanedDatesString = this.dates.replace(/\s|\[|\]/g, '');
+        this.datesArray = cleanedDatesString.split(',').map(date => new Date(`${date} 00:00:00 UTC`));
+        break;
+      case 'object':
+        this.datesArray = this.dates as Date[];
+        break;
     }
+    this.datesArray = this.datesArray.sort((a, b) => (b.getTime() - a.getTime() > 0 ? 1 : -1));
   }
 
   getFirstVisibleDateAt(position) {
