@@ -3,7 +3,7 @@
 Navigate in time same way as Google Photos.
 _Built with [StencilJS](https://stenciljs.com/)_
 
-[<img src="screenshot.png" width="300" alt=""/>](https://timeline-vertical-navigation.herokuapp.com/)
+[<img src="screenshot.png" width="200" alt=""/>](https://timeline-vertical-navigation.herokuapp.com/)
 
 ## Properties
 
