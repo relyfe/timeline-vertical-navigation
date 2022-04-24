@@ -93,7 +93,7 @@ export class TimelineVerticalNavigation {
   }
 
   getIndexRatioByDate(date: Date) {
-    const index = this.datesArray.findIndex(d => d.getTime() === date.getTime());
+    const index = this.datesArray.findIndex(d => d.toString() == date.toString());
     return index / (this.datesArray.length - 1);
   }
 
