@@ -48,8 +48,6 @@ For the demo, there is an "items-grid" component you can find in source, this is
 </script>
 ```
 
-### [Online demo](https://timeline-vertical-navigation.herokuapp.com/)
-
 ## React.js
 
 Use [react-timeline-vertical-navigation](https://www.npmjs.com/package/react-timeline-vertical-navigation) package.
